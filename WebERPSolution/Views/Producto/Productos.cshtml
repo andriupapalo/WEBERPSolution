@@ -1,0 +1,135 @@
+﻿@model ERPSolution.Models.Dtos.ProductoDto
+
+@{
+    ViewData["Title"] = "Productos";
+}
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+<h1>Administracion de Productos</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Productos" asp-controller="Producto" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input id="Descripcion" asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Saldoinicial" class="control-label"></label>
+                <input id="Saldoinicial"  asp-for="Saldoinicial" class="form-control" />
+                <span asp-validation-for="Saldoinicial" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SaldoActual" class="control-label"></label>
+                <input id="SaldoActual" asp-for="SaldoActual" class="form-control" />
+                <span asp-validation-for="SaldoActual" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UnidadMedidaId" class="control-label"></label>
+                <input id="UnidadMedidaId" asp-for="UnidadMedidaId" class="form-control" />
+                <span asp-validation-for="UnidadMedidaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CostoPromedio" class="control-label"></label>
+                <input id="CostoPromedio" asp-for="CostoPromedio" class="form-control" />
+                <span asp-validation-for="CostoPromedio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrecioVenta" class="control-label"></label>
+                <input id="PrecioVenta" asp-for="PrecioVenta" class="form-control" />
+                <span asp-validation-for="PrecioVenta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockMinimo" class="control-label"></label>
+                <input Id="StockMinimo" asp-for="StockMinimo" class="form-control" />
+                <span asp-validation-for="StockMinimo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockMaximo" class="control-label"></label>
+                <input id="StockMaximo" asp-for="StockMaximo" class="form-control" />
+                <span asp-validation-for="StockMaximo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+
+<Button onclick="todos()" class="btn btn-primary">Cargar todos los Productos</Button>
+<br />
+
+
+<h2>Lista de Productos</h2>
+<table id="tablapaginada" class="table table-sm table-striped table-bordered m-2">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Descripcion</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+    function todos() {
+        debugger
+        $.getJSON("/producto/producto", function (productos) {
+            $("#tablapaginada tbody tr").remove();
+            $.map(productos, function (producto) {
+                $('#tablapaginada tbody').append("<tr>"
+                    + "<td>" + producto.id + "</td>"
+                    + "<td>" + producto.Descripcion + "</td>"
+                    + "<td>"
+                    + "<button class='btn-success' onclick='Edit(" + producto.Id + ")' style='margin - right: 5px;'>Edit</button>
+                    + "<button class='btn-danger' onclick='Delete(" + producto.Id + ")'>Delete</button>
+                    + "</td >"
+                    + "</tr>");
+            });
+        });
+    }
+
+
+    function Edit(int id) {
+        $.getJSON("/producto/ProductoProductoById?id="+id, function (productos) {
+            $('#Descripcion').val(productos.Descripcion);
+            $('#SaldoInicial').val(productos.SaldoInicial);
+            $('#SaldoActual').val(productos.SaldoActual);
+            $('#UnidaMedidaId').val(productos.UnidaMedidaId);
+            $('#CostoPromedio').val(productos.CostoPromedio);
+            $('#PrecioVenta').val(productos.PrecioVenta);
+            $('#StockMinimo').val(productos.StockMinimo);
+            $('#StockMaximo').val(productos.StockMaximo);
+        });
+     }
+
+                function Delete(int id) {
+                    $.ajax({
+                        url: '/Producto/Delete?id=' + id,
+                        type: 'DELETE',
+                        dataType: 'json',
+                        success: function (data) {
+                        },
+                        error: function (ex) {
+                            cnsole.log('error');
+                        }
+                    });
+                }
+</script>
